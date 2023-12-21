@@ -1,11 +1,11 @@
-[tests]: 	http://img.shields.io/travis/mafintosh/csv-parser.svg
-[tests-url]: http://travis-ci.org/mafintosh/csv-parser
+[tests]: 	http://img.shields.io/travis/pabloreszczynski/csv-parser.svg
+[tests-url]: http://travis-ci.org/pabloreszczynski/csv-parser
 
-[cover]: https://codecov.io/gh/mafintosh/csv-parser/branch/master/graph/badge.svg
-[cover-url]: https://codecov.io/gh/mafintosh/csv-parser
+[cover]: https://codecov.io/gh/pabloreszczynski/csv-parser/branch/master/graph/badge.svg
+[cover-url]: https://codecov.io/gh/pabloreszczynski/csv-parser
 
-[size]: https://packagephobia.now.sh/badge?p=csv-parser
-[size-url]: https://packagephobia.now.sh/result?p=csv-parser
+[size]: https://packagephobia.now.sh/badge?p=csv-parser-browser
+[size-url]: https://packagephobia.now.sh/result?p=csv-parser-browser
 
 # csv-parser
 
@@ -168,7 +168,7 @@ _Note: If using the `headers` for an operation on a file which contains headers 
 
 Type: `Function`
 
-A function that can be used to modify the values of each header. Return a `String` to modify the header. Return `null` to remove the header, and it's column, from the results. 
+A function that can be used to modify the values of each header. Return a `String` to modify the header. Return `null` to remove the header, and it's column, from the results.
 
 ```js
 csv({
