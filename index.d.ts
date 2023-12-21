@@ -1,8 +1,5 @@
-/// <reference types="node"/>
-import { Transform } from 'stream';
-
 declare namespace csvParser {
-  type CsvParser = Transform;
+  type CsvParser = TransformStream<Uint8Array | string, any>;
 
   interface Options {
     /**
@@ -54,7 +51,11 @@ Bugs Bunny,22
      *   mapValues: ({ header, index, value }) => value.toLowerCase()
      * });
      */
-    readonly mapValues?: (args: { header: string; index: number; value: any }) => any;
+    readonly mapValues?: (args: {
+      header: string;
+      index: number;
+      value: any;
+    }) => any;
 
     /**
      * Specifies a single-character string to denote the end of a line in a CSV file.
@@ -140,7 +141,7 @@ Bugs Bunny,22
  *   });
  */
 declare const csvParser: (
-  optionsOrHeaders?: csvParser.Options | ReadonlyArray<string>
+  optionsOrHeaders?: csvParser.Options | ReadonlyArray<string>,
 ) => csvParser.CsvParser;
 
 export = csvParser;

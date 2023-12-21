@@ -1,41 +1,61 @@
-const test = require('ava')
+import * as assert from "node:assert";
+import { test } from "node:test";
+import { collect } from "./helpers/helper.js";
 
-const { collect } = require('./helpers/helper')
+test("custom quote character", async () => {
+  const lines = await collect("option-quote", { quote: "'" });
 
-test.cb('custom quote character', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines[0], 'first row')
-    t.snapshot(lines[1], 'second row')
-    t.is(lines.length, 2, '2 rows')
-    t.end()
-  }
+  assert.deepEqual(lines[0], {
+    a: "1",
+    b: "some value",
+    c: "2",
+  });
+  assert.deepEqual(lines[1], {
+    a: "3",
+    b: "4",
+    c: "5",
+  });
+});
 
-  collect('option-quote', { quote: "'" }, verify)
-})
+test("custom quote and escape character", async () => {
+  const lines = await collect("option-quote-escape", {
+    quote: "'",
+    escape: "\\",
+  });
 
-test.cb('custom quote and escape character', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines[0], 'first row')
-    t.snapshot(lines[1], 'second row')
-    t.snapshot(lines[2], 'third row')
-    t.is(lines.length, 3, '3 rows')
-    t.end()
-  }
+  assert.deepEqual(lines[0], {
+    a: "1",
+    b: "some 'escaped' value",
+    c: "2",
+  });
+  assert.deepEqual(lines[1], {
+    a: "3",
+    b: "''",
+    c: "4",
+  });
+  assert.deepEqual(lines[2], {
+    a: "5",
+    b: "6",
+    c: "7",
+  });
+});
 
-  collect('option-quote-escape', { quote: "'", escape: '\\' }, verify)
-})
+test("quote many", async () => {
+  const lines = await collect("option-quote-many", { quote: "'" });
 
-test.cb('quote many', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines[0], 'first row')
-    t.snapshot(lines[1], 'second row')
-    t.snapshot(lines[2], 'third row')
-    t.is(lines.length, 3, '3 rows')
-    t.end()
-  }
-
-  collect('option-quote-many', { quote: "'" }, verify)
-})
+  assert.deepEqual(lines[0], {
+    a: "1",
+    b: "some 'escaped' value",
+    c: "2",
+  });
+  assert.deepEqual(lines[1], {
+    a: "3",
+    b: "''",
+    c: "4",
+  });
+  assert.deepEqual(lines[2], {
+    a: "5",
+    b: "6",
+    c: "7",
+  });
+});

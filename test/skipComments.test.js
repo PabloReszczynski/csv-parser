@@ -1,25 +1,27 @@
-const test = require('ava')
+import * as assert from "node:assert";
+import { test } from "node:test";
+import { collect } from "./helpers/helper.js";
 
-const { collect } = require('./helpers/helper')
+test("comment", async () => {
+  const lines = await collect("comment", { skipComments: true });
 
-test.cb('comment', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines)
-    t.is(lines.length, 1, '1 row')
-    t.end()
-  }
+  assert.deepEqual(lines, [
+    {
+      a: "1",
+      b: "2",
+      c: "3",
+    },
+  ]);
+});
 
-  collect('comment', { skipComments: true }, verify)
-})
+test("custom comment", async () => {
+  const lines = await collect("option-comment", { skipComments: "~" });
 
-test.cb('custom comment', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines)
-    t.is(lines.length, 1, '1 row')
-    t.end()
-  }
-
-  collect('option-comment', { skipComments: '~' }, verify)
-})
+  assert.deepEqual(lines, [
+    {
+      a: "1",
+      b: "2",
+      c: "3",
+    },
+  ]);
+});

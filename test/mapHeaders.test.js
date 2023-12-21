@@ -1,36 +1,32 @@
-const test = require('ava')
+import * as assert from "node:assert";
+import { test } from "node:test";
+import { collect } from "./helpers/helper.js";
 
-const { collect } = require('./helpers/helper')
+test("rename columns", async () => {
+  const headers = { a: "x", b: "y", c: "z" };
+  const mapHeaders = ({ header }) => {
+    return headers[header];
+  };
+  const lines = await collect("basic", { mapHeaders });
+  assert.deepEqual(lines[0], {
+    x: "1",
+    y: "2",
+    z: "3",
+  });
+  assert.equal(lines.length, 1, "1 row");
+});
 
-test.cb('rename columns', (t) => {
-  const headers = { a: 'x', b: 'y', c: 'z' }
-  const mapHeaders = ({ header, index }) => {
-    return headers[header]
-  }
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines[0], 'first row')
-    t.is(lines.length, 1, '1 row')
-    t.end()
-  }
-
-  collect('basic', { mapHeaders }, verify)
-})
-
-test.cb('skip columns a and c', (t) => {
-  const mapHeaders = ({ header, index }) => {
-    if (['a', 'c'].indexOf(header) > -1) {
-      return null
+test("skip columns a and c", async () => {
+  const mapHeaders = ({ header }) => {
+    if (["a", "c"].indexOf(header) > -1) {
+      return null;
     }
-    return header
-  }
+    return header;
+  };
 
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines[0], 'first row')
-    t.is(lines.length, 1, '1 row')
-    t.end()
-  }
-
-  collect('basic', { mapHeaders }, verify)
-})
+  const lines = await collect("basic", { mapHeaders });
+  assert.deepEqual(lines[0], {
+    b: "2",
+  });
+  assert.equal(lines.length, 1, "1 row");
+});

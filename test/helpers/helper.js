@@ -1,35 +1,24 @@
-const fs = require('fs')
-const path = require('path')
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { Readable } from "node:stream";
+import { fileURLToPath } from "node:url";
+import csv from "../../index.js";
 
-const csv = require('../..')
-
-const read = fs.createReadStream
-
-// helpers
-function fixture (name) {
-  return path.join(__dirname, '../fixtures', name)
+export function fixture(name) {
+  const filename = fileURLToPath(import.meta.url);
+  const dirname = path.dirname(filename);
+  return path.join(dirname, "../fixtures", name);
 }
 
-function collect (file, opts, cb) {
-  if (typeof opts === 'function') {
-    return collect(file, null, opts)
+export async function collect(file, opts = {}) {
+  const data = fs.createReadStream(fixture(`${file}.csv`));
+  const lines = [];
+  const parser = csv(opts);
+
+  const stream = Readable.toWeb(data).pipeThrough(parser);
+  for await (const data of stream) {
+    lines.push(data);
   }
-  const data = read(fixture(`${file}.csv`))
-  const lines = []
-  const parser = csv(opts)
-  data
-    .pipe(parser)
-    .on('data', (line) => {
-      lines.push(line)
-    })
-    .on('error', (err) => {
-      cb(err, lines)
-    })
-    .on('end', () => {
-      // eslint-disable-next-line standard/no-callback-literal
-      cb(false, lines)
-    })
-  return parser
-}
 
-module.exports = { collect, fixture }
+  return lines;
+}

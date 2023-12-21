@@ -1,14 +1,20 @@
-const test = require('ava')
+import * as assert from "node:assert";
+import { test } from "node:test";
+import { collect } from "./helpers/helper.js";
 
-const { collect } = require('./helpers/helper')
-
-test.cb('headers: false, numeric column names', (t) => {
-  const verify = (err, lines) => {
-    t.false(err, 'no err')
-    t.snapshot(lines, 'lines')
-    t.is(lines.length, 2, '2 rows')
-    t.end()
-  }
-
-  collect('basic', { headers: false }, verify)
-})
+test("headers: false, numeric column names", async () => {
+  const lines = await collect("basic", { headers: false });
+  assert.deepEqual(lines, [
+    {
+      0: "a",
+      1: "b",
+      2: "c",
+    },
+    {
+      0: "1",
+      1: "2",
+      2: "3",
+    },
+  ]);
+  assert.equal(lines.length, 2, "2 rows");
+});
