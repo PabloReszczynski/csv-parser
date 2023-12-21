@@ -13,6 +13,7 @@
     "rules": {
       "recommended": true,
       "complexity": {
+        "useOptionalChain": "off"
       },
       "correctness": {
         "noUnusedVariables": "error",

@@ -19,7 +19,7 @@ test("simple csv", async () => {
 test("supports strings", async () => {
   const { readable, writable } = csv();
 
-  await new Promise(async (resolve, reject) => {
+  await new Promise((resolve, reject) => {
     readable
       .getReader()
       .read()
@@ -35,9 +35,10 @@ test("supports strings", async () => {
       });
 
     const writer = writable.getWriter();
-    await writer.write("hello\n");
-    await writer.write("world\n");
-    await writer.close();
+    writer
+      .write("hello\n")
+      .then(() => writer.write("world\n"))
+      .finally(() => writer.close());
   });
 });
 
@@ -115,17 +116,25 @@ test("line with comma in quotes", async () => {
   };
   const { writable, readable } = csv();
 
-  readable
-    .getReader()
-    .read()
-    .then(({ value }) => {
-      assert.deepEqual(value, correct);
-    });
+  await new Promise((resolve, reject) => {
+    readable
+      .getReader()
+      .read()
+      .then(({ value }) => {
+        try {
+          assert.deepEqual(value, correct);
+          resolve(e);
+        } catch (e) {
+          reject(e);
+        }
+      });
 
-  const writer = writable.getWriter();
-  await writer.write(headers);
-  await writer.write(line);
-  await writer.close();
+    const writer = writable.getWriter();
+    writer
+      .writer(headers)
+      .then(() => writer.write(line))
+      .finally(() => writer.close());
+  });
 });
 
 test("line with newline in quotes", async () => {
@@ -138,7 +147,7 @@ test("line with newline in quotes", async () => {
   };
   const { readable, writable } = csv();
 
-  await new Promise(async (resolve, reject) => {
+  await new Promise((resolve, reject) => {
     readable
       .getReader()
       .read()
@@ -152,9 +161,10 @@ test("line with newline in quotes", async () => {
       });
 
     const writer = writable.getWriter();
-    await writer.write(headers);
-    await writer.write(line);
-    await writer.close();
+    writer
+      .write(headers)
+      .then(() => writer.write(line))
+      .finally(() => writer.close());
   });
 });
 
@@ -164,7 +174,7 @@ test("cell with comma in quotes", async () => {
   const correct = "Anytown, WW";
   const { readable, writable } = csv();
 
-  await new Promise(async (resolve, reject) => {
+  await new Promise((resolve, reject) => {
     readable
       .getReader()
       .read()
@@ -178,9 +188,10 @@ test("cell with comma in quotes", async () => {
       });
 
     const writer = writable.getWriter();
-    await writer.write(headers);
-    await writer.write(cell);
-    await writer.close();
+    writer
+      .write(headers)
+      .then(() => writer.write(cell))
+      .finally(() => writer.close());
   });
 });
 

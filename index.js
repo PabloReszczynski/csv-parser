@@ -232,7 +232,6 @@ class InternalCsvParser {
       data = Buffer.from(decoder.decode(data));
     }
 
-
     const { escape, quote } = this.options;
     let start = 0;
     let buffer = data;

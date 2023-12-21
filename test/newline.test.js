@@ -1,6 +1,6 @@
+import * as assert from "node:assert";
 import { test } from "node:test";
 import { collect } from "./helpers/helper.js";
-import * as assert from "node:assert";
 
 test("newline", async () => {
   const lines = await collect("option-newline", { newline: "X" });
